@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Express Sample</title>
+<script>
+// HTTP オブジェクトの作成
+function HttpCreate() {
+  var httpObject = null;
+
+  try {
+    httpObject = new XMLHttpRequest();
+  } catch( e ) {
+    try {
+      httpObject = new ActiveXObject( "Msxml2.XMLHTTP" );
+    } catch( e ) {
+      try {
+        httpObject = new ActiveXObject( "Microsoft.XMLHTTP" );
+      } catch( e ) {
+        return null;
+      }
+    }
+  }
+
+  return httpObject;
+}
+
+function HttpContent( address, func ) {
+  httpObject = HttpCreate();
+  if ( !httpObject ) {
+    // オブジェクトがnullなので失敗。
+    return null;
+  }
+  if ( func ) {
+    // 関数オブジェクトがundefinedじゃない
+    httpObject.onreadystatechange = func;
+    // 非同期通信
+    httpObject.open( "GET", address, true );
+    httpObject.send( null );
+    return httpObject;
+  }
+
+  // 第二引数がない。
+  // 同期通信
+  httpObject.open( "GET", address, false );
+  httpObject.send( null );
+
+  return httpObject.responseText;
+}
+
+// APIを叩く。
+function API_Echo( value, func ) {
+  // 値をURLエンコードしてから渡す。
+  var httpobj = HttpContent( './api/value/' + encodeURIComponent( value ), function() {
+    if ( httpobj && httpobj.readyState == 4 && httpobj.status == 200 ) {
+      // APIを無事叩いて結果が返ってきた。
+      // 受け取ったデータをJSON形式に変換。
+      var result = JSON.parse( httpobj.responseText );
+      // 登録されている関数に結果を渡す。
+      func( result );
+    }
+  } );
+}
+
+// ボタンがクリックされたときに実行する処理
+function ButtonEvent() {
+  var e = document.getElementById( 'value' );
+  // APIを叩く。
+  // 第一引数は値。第二引数はコールバック関数で、第一引数としてAPIの返り値をJSONに変換したオブジェクトが手に入る。
+  API_Echo( e.value, function( result ) {
+    var e = document.getElementById( 'result' );
+    // JSONにしといてあれだが、もう一回文字列に直して結果を出力する。
+    e.innerHTML = JSON.stringify( result );
+  } );
+}
+
+// ページ読み込み終了後に実行される処理。
+// ここでJavaScriptを実行すると、まだ下まで読み込んでないので、HTMLの中身(DOM)にアクセスできない。
+// ので、読み終わってからアクセスする。
+document.addEventListener( 'DOMContentLoaded', function () {
+  var e = document.getElementById( 'button' );
+  e.addEventListener( 'click', ButtonEvent, false );
+}, false);
+
+</script>
+</head>
+<body>
+
+<input type="text" id="value" />
+
+<button id="button">エコーボタン</button>
+
+<div id="result"></div>
+
+</body>
+</html>
