@@ -25,6 +25,7 @@ function HttpCreate() {
   return httpObject;
 }
 
+// HTTP通信を行う。
 function HttpContent( address, func ) {
   httpObject = HttpCreate();
   if ( !httpObject ) {
@@ -48,10 +49,12 @@ function HttpContent( address, func ) {
   return httpObject.responseText;
 }
 
-// APIを叩く。
+// エコーAPIを叩く。
+// 第一引数にエコーさせる値。第二引数に返ってきた値を処理する関数を与える。
 function API_Echo( value, func ) {
   // 値をURLエンコードしてから渡す。
   var httpobj = HttpContent( './api/value/' + encodeURIComponent( value ), function() {
+    // HTTPのコードを調べたりする。ここら辺は自分で調べて。
     if ( httpobj && httpobj.readyState == 4 && httpobj.status == 200 ) {
       // APIを無事叩いて結果が返ってきた。
       // 受け取ったデータをJSON形式に変換。
@@ -68,6 +71,7 @@ function ButtonEvent() {
   // APIを叩く。
   // 第一引数は値。第二引数はコールバック関数で、第一引数としてAPIの返り値をJSONに変換したオブジェクトが手に入る。
   API_Echo( e.value, function( result ) {
+    // APIから結果が返ってきたときに実行する処理。
     var e = document.getElementById( 'result' );
     // JSONにしといてあれだが、もう一回文字列に直して結果を出力する。
     e.innerHTML = JSON.stringify( result );
@@ -78,6 +82,7 @@ function ButtonEvent() {
 // ここでJavaScriptを実行すると、まだ下まで読み込んでないので、HTMLの中身(DOM)にアクセスできない。
 // ので、読み終わってからアクセスする。
 document.addEventListener( 'DOMContentLoaded', function () {
+  // ボタンクリック時に、ButtonEvent()関数を実行するように、イベントを追加する。
   var e = document.getElementById( 'button' );
   e.addEventListener( 'click', ButtonEvent, false );
 }, false);
