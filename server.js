@@ -44,8 +44,8 @@ app.use( express.static( './public/' ) );
 
 // /api以下のルートを登録。
 // http://localhost:3080/api/... のアクセスはこちらになる。
-app.use('/api', router);
+app.use( '/api', router );
 
 //サーバ起動
-app.listen(port);
-console.log(　'listen on port ' + port　);
+app.listen( port );
+console.log( 'listen on port ' + port );
