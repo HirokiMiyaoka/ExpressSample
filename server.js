@@ -26,8 +26,8 @@ router.get( '/', function( req, res, next ) {
 	res.json( { message: 'Successfully Posted a test message.' } );
 });
 
-// http://localhost:3000/api/value/任意の値 へのアクセス。
-router.get( '/value/:val', function( req, res, next ) {
+// http://localhost:3000/api/echo/任意の値 へのアクセス。
+router.get( '/echo/:val', function( req, res, next ) {
 	// :VAL で指定した値は req.params.VAL で取得できる。
 	res.json( { message: 'Get value: ' + req.params.val, value: req.params.val } );
 });

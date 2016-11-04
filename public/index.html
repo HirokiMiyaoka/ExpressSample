@@ -41,7 +41,7 @@ function HttpContent( address, func ) {
 // 第一引数にエコーさせる値。第二引数に返ってきた値を処理する関数を与える。
 function API_Echo( value, func ) {
   // 値をURLエンコードしてから渡す。
-  var httpobj = HttpContent( './api/value/' + encodeURIComponent( value ), function() {
+  var httpobj = HttpContent( './api/echo/' + encodeURIComponent( value ), function() {
     // HTTPのコードを調べたりする。ここら辺は自分で調べて。
     if ( httpobj && httpobj.readyState == 4 && httpobj.status == 200 ) {
       // APIを無事叩いて結果が返ってきた。
